@@ -1,0 +1,9 @@
+//Lines which have a "//" at the beginning or are empty will be ignored
+
+wood
+coalOre
+coal
+coke
+ironOre
+iron
+steel
