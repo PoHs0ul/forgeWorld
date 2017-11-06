@@ -17,7 +17,7 @@ public class Chunk {
 		spots=new Spot[size][size];
 		for(int i=0;i<size;++i){
 			for(int j=0;j<size;++j){
-				spots[i][j]=new Spot();//initialize spot in each position
+				spots[i][j]=new Spot("ground",0);//initialize spot in each position
 			}
 		}
 	}
