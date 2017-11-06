@@ -114,4 +114,7 @@ public class GameMechanics {
 	public ArrayList<String> getResourceNameList(){
 		return resourceNames;
 	}
+	public Map getMap() {
+		return map;
+	}
 }
