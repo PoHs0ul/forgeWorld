@@ -13,6 +13,10 @@ public class DoubleLinkedLockedList<Type> {
 		return head;
 	}
 	
+	public DoubleLinkedLockedListNode<Type> getTail(){
+		return tail;
+	}
+	
 	//Add a node to the end of the list
 	public DoubleLinkedLockedListNode<Type> addNode(Type newContent){
 		DoubleLinkedLockedListNode<Type> newNode=new DoubleLinkedLockedListNode<Type>(this, tail, null, newContent);

@@ -16,4 +16,15 @@ public class ElectricitySubNetwork {
 		return poles.addNode(newPole);
 	}
 	
+	public ElectricityNetwork getNetwork() {
+		return network;
+	}
+	
+	public utilities.DoubleLinkedLockedList<ElectricityLvPole> getPoles() {
+		return poles;
+	}
+	
+	public void delete() {
+		networkNode.remove();
+	}
 }

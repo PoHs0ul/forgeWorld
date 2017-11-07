@@ -3,24 +3,29 @@ package gameGraphics;
 import gameMechanics.GameMechanics;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.io.FileNotFoundException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import javax.swing.JFrame;
 
 public class GameGraphics {
 	GameMechanics mechanics;
 	GraphicsDevice GraphDevice;
 	boolean fullscreen = false;
-	JFrame mainFrame;
+	boolean ingame = true;
+	Frame mainFrame;
 	TextureHandler textureHandler;
+	FramePainter fPainter;
+	Timer frameTimer;
 	
 	public GameGraphics(GameMechanics gameMechanics) {
 		GraphDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		mainFrame = new JFrame("Forge World");
+		mainFrame = new Frame("Forge World");
 		mechanics = gameMechanics;
 		
 		try {
@@ -42,14 +47,42 @@ public class GameGraphics {
 		} else {
 			mainFrame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		}
+		
 		mainFrame.setBackground(Color.BLACK);
 		mainFrame.setVisible(true);
+		
 		textureHandler = new TextureHandler();
 		textureHandler.load(); //maybe later, this will be called by a different method from gameMechanics
+		fPainter = new FramePainter(mainFrame.getWidth(), mainFrame.getHeight(), mechanics
+				);
+		
+		mainFrame.addWindowListener(ListenerHandler.getMainFrameWindowListener(this));
+		mainFrame.addMouseListener(ListenerHandler.getMainFrameMouseListener(this));
+		
+		
+		
+		
+		frameTimer = new Timer();
+		frameTimer.schedule(
+				new TimerTask() {
+					
+					@Override
+					public void run() {
+						paint();
+					}
+					
+				}
+				, 0, 60);
 	}
 	
-	public void paint() { //test-stuff, not final
+	public void paint() {
 		Graphics g = mainFrame.getGraphics();
-		g.drawImage(textureHandler.getImage("ground0"), 0, 0, mainFrame);
+		
+		
+		if(ingame)g.drawImage(fPainter.paint(), 0, 0, mainFrame);
+	}
+	
+	public GameMechanics getGameMechanics() {
+		return mechanics;
 	}
 }

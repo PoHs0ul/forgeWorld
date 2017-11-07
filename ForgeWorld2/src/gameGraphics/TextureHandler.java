@@ -23,7 +23,7 @@ public class TextureHandler {
 	}
 	
 	/**
-	 * Loads the images specified in the textures file. Should 
+	 * Loads the images specified in the textures file. Should be called before accessing textures.
 	 * @throws FileNotFoundException if the textures file is not found.
 	 */
 	public void load() throws FileNotFoundException{
