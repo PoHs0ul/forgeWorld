@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,14 +13,19 @@ import javax.imageio.ImageIO;
 
 public class TextureHandler {
 	
-	public String basepath = Paths.get(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().toString();
-	private String filespath = basepath+File.separator+"files";
+	public String basepath;
+	private String filespath;
 	
 	
 	private HashMap<String, Image> images;
 	
 	public TextureHandler() {
-		
+		try {
+			basepath = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toString();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		filespath = basepath+File.separator+"files";
 	}
 	
 	/**
