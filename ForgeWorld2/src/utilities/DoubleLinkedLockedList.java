@@ -27,4 +27,22 @@ public class DoubleLinkedLockedList<Type> {
 		}
 		return tail;
 	}
+	
+	//Adds the content from another list to this one. Leaves the other list empty
+	public void addList(DoubleLinkedLockedList<Type> listToAdd) {
+		//update content in the individual nodes
+		for(DoubleLinkedLockedListNode<Type> i=listToAdd.head;i!=listToAdd.tail;i=i.getNextNode()) {
+			i.parentList=this;
+		}
+		//update heads and tails
+		if(head==null) {
+			head=listToAdd.head;
+			tail=listToAdd.tail;
+		}else {
+			tail.nextNode=listToAdd.head;
+			tail=listToAdd.tail;
+		}
+		listToAdd.head=null;
+		listToAdd.tail=null;
+	}
 }
