@@ -41,7 +41,7 @@ public abstract class MapObject {
 			for(int j=0;j<getHitMap()[i].length;++j){
 				if(getHitMap()[i][j]==1){
 					Spot s=map.getSpotFromSpCoords(x-((((angle+1)/2)%2)*2-1)*(i-getHitMap().length/2), y-(((angle/2)%2)*2-1)*(j-getHitMap()[i].length/2));
-					if(s==null||s.getBuilding()!=null){
+					if(s==null||s.getBuilding()!=null||s.getElectricityPole()!=null){
 						return false;
 					}
 				}
