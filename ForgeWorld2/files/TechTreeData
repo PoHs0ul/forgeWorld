@@ -1,0 +1,10 @@
+//Comments can be added by having a "//" at the start of the line
+//The entry for each TechTreeItem starts by a ";" followed by its name. 
+//After this, there is a "{" and a list of the names of the TechTreeItems it depends on, each of them preceded by a ";" and each of them on a new line.
+//At the end, there is a "}" to mark the end of the information about this TechTreeItem.
+
+;CoalMine{}
+
+;RefinedCoal{
+	;CoalMine
+}
