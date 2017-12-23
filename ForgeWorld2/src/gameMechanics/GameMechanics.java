@@ -21,11 +21,13 @@ public class GameMechanics {
 	private ArrayList<Building> buildingTypeList;//A list which contains an instance of each possible building Type
 	private ArrayList<String> resourceNames;//A list which contains the names of all resources. Their position in the array is the ID.
 	private HashMap<String,Integer> resourceIDs;//A hash map which relates item names to their IDs
+	private TechTree techTree;//A class which generates and stores the tech tree
 	
 	public GameMechanics() {
 		
 		initializeItems();
 		initializeBuildingTypeList();
+		techTree=new TechTree();
 		
 		map=new Map(this, 100,100);//create a map with the given number of chunks (length and width)
 		
@@ -116,5 +118,8 @@ public class GameMechanics {
 	}
 	public Map getMap() {
 		return map;
+	}
+	public TechTree getTechTree() {
+		return techTree;
 	}
 }

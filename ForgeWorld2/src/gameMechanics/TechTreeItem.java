@@ -3,6 +3,8 @@ package gameMechanics;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+
+//Only a first try, abstract class palned for future
 public class TechTreeItem {
 	private ArrayList<TechTreeItem> requirements;
 	private ArrayList<TechTreeItem> dependencies;
@@ -28,5 +30,13 @@ public class TechTreeItem {
 	
 	String getName(){
 		return name;
+	}
+	
+	ArrayList<TechTreeItem> getRequirements(){
+		return requirements;
+	}
+	
+	ArrayList<TechTreeItem> getDependencies(){
+		return dependencies;
 	}
 }
