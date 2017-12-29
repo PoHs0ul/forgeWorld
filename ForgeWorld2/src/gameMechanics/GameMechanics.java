@@ -1,14 +1,9 @@
 package gameMechanics;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,13 +14,12 @@ public class GameMechanics {
 	private Map map;//An object which contains data about all the possible positions on the map
 	private Timer productionTickTimer;//A timer which continuously executes stuff for the production
 	private ArrayList<Building> buildingTypeList;//A list which contains an instance of each possible building Type
-	private ArrayList<String> resourceNames;//A list which contains the names of all resources. Their position in the array is the ID.
-	private HashMap<String,Integer> resourceIDs;//A hash map which relates item names to their IDs
 	private TechTree techTree;//A class which generates and stores the tech tree
+	private ResourceList resourceList;//Stores general information about the resources available in the game
 	
 	public GameMechanics() {
 		
-		initializeItems();
+		resourceList=new ResourceList();
 		initializeBuildingTypeList();
 		techTree=new TechTree();
 		
@@ -74,52 +68,14 @@ public class GameMechanics {
 		}
 	}
 	
-	//initialize the resources
-	private void initializeItems(){
-		resourceNames=new ArrayList<String>();
-		resourceIDs=new HashMap<>();
-		try {
-			File resourceDir=new File(System.getProperty("user.dir")+File.separator+"resources");
-			String[] resourceDirContent=resourceDir.list();
-			for(int i=0;i<resourceDirContent.length;++i){
-				File folder=new File(resourceDir+File.separator+resourceDirContent[i]);
-				System.out.println("loading items in "+folder);
-				if(folder.isDirectory()){
-					BufferedReader buffer=new BufferedReader(new FileReader(folder.toString()+File.separator+"resource list.txt"));
-					for(String s=buffer.readLine();s!=null;s=buffer.readLine()){
-						if(!(s.startsWith("//")||s.isEmpty())){
-							String s2=folder.getName()+"."+s;
-							resourceNames.add(s2);
-							resourceIDs.put(s2, resourceNames.size()-1);
-							System.out.println("Added resource "+s2);
-						}
-					}
-					buffer.close();
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		resourceNames.trimToSize();
-	}
-	
-	//Get the ID of a resource using its name
-	public int getResourceID(String resName){
-		return resourceIDs.get(resName);
-	}
-	//Get the name of a resource using its ID
-	public String getResourceName(int resID){
-		return resourceNames.get(resID);
-	}
-	public ArrayList<String> getResourceNameList(){
-		return resourceNames;
-	}
+	//Getter methods
 	public Map getMap() {
 		return map;
 	}
 	public TechTree getTechTree() {
 		return techTree;
+	}
+	public ResourceList getResourceList() {
+		return resourceList;
 	}
 }

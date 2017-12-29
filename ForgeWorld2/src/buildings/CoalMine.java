@@ -21,8 +21,8 @@ public class CoalMine extends gameMechanics.Building{
 		return new ArrayList<String>(Arrays.asList("basic.steel","basic.wood"));
 	}
 
-	public ArrayList<Integer> getCostItemAmounts() {
-		return new ArrayList<Integer>(Arrays.asList(0,0));
+	public ArrayList<Double> getCostItemAmounts() {
+		return new ArrayList<Double>(Arrays.asList(0.0,0.0));
 	}
 
 	public int getMaxStrPts() {

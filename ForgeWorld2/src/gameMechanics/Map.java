@@ -4,7 +4,7 @@ package gameMechanics;
 public class Map {
 	private Chunk[][] chunks;//a two dimensional array of chunks
 	
-	public ResourceManager resources;//An object which keeps track of the resources of the players
+	public ResourceManager resources;//An object which keeps track of the resources of the player
 	
 	public utilities.DoubleLinkedLockedList<Building> buildingList;//A list which contains all the buildings the player has under his control
 	public utilities.DoubleLinkedLockedList<UncontrolledObject> mapObjectList;//A list of all objects on the map which the player does not control
@@ -12,7 +12,7 @@ public class Map {
 	public ElectricityNetwork electricityNet;//A Class which handles the electricity network
 	
 	public Map(GameMechanics mec, int x, int y){
-		resources=new ResourceManager(mec);
+		resources=mec.getResourceList().createNewResourceManager();
 		buildingList=new utilities.DoubleLinkedLockedList<Building>();
 		mapObjectList=new utilities.DoubleLinkedLockedList<UncontrolledObject>();
 		

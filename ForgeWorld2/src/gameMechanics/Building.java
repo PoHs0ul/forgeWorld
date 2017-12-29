@@ -77,7 +77,7 @@ public abstract class Building extends MapObject{
 	
 	//Abstract getter methods
 	public abstract ArrayList<String> getCostItemNames();
-	public abstract ArrayList<Integer> getCostItemAmounts();
+	public abstract ArrayList<Double> getCostItemAmounts();
 	
 	//Abstract setter methods
 	
