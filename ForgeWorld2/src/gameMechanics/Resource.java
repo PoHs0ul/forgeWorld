@@ -4,7 +4,7 @@ public abstract class Resource {
 	private double amount;
 	
 	protected Resource(){
-		
+		amount=0.0;
 	}
 	
 	public void add(double toAdd) {

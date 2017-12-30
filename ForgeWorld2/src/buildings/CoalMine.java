@@ -18,7 +18,7 @@ public class CoalMine extends gameMechanics.Building{
 	}
 	
 	public ArrayList<String> getCostItemNames() {
-		return new ArrayList<String>(Arrays.asList("basic.steel","basic.wood"));
+		return new ArrayList<String>(Arrays.asList("Steel","Wood"));
 	}
 
 	public ArrayList<Double> getCostItemAmounts() {
