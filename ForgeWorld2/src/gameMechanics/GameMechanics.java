@@ -18,7 +18,6 @@ public class GameMechanics {
 	private ResourceList resourceList;//Stores general information about the resources available in the game
 	
 	public GameMechanics() {
-		
 		resourceList=new ResourceList();
 		initializeBuildingTypeList();
 		techTree=new TechTree();
