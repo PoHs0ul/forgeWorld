@@ -25,7 +25,7 @@ public class TextureHandler {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		filespath = basepath+File.separator+"files";
+		filespath = basepath+File.separator+"textures";
 	}
 	
 	/**
@@ -51,8 +51,9 @@ public class TextureHandler {
 			A: if(scanLine.hasNext()) {
 				imgName = scanLine.next();
 				if(scanLine.hasNext()) {
-					imgPath = scanLine.next();
+					imgPath = filespath+scanLine.next().replace("/", File.separator);
 					try {
+						System.out.println(imgPath);
 						images.put(imgName, ImageIO.read(new File(imgPath)));
 					} catch (IOException e) {
 						error = true;
