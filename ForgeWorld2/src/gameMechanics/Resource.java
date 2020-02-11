@@ -1,19 +1,30 @@
 package gameMechanics;
 
+import dimensionSystem.DimensionalQuantity;
+import dimensionSystem.QuantityDimension;
+
 public abstract class Resource {
-	private double amount;
+	protected DimensionalQuantity amount;
 	
-	protected Resource(){
-		amount=0.0;
+	public Resource(Resource templateResource, double startAmount, String startAmountUnit) {
+		amount = new DimensionalQuantity(templateResource.amount, startAmount, startAmountUnit);
 	}
 	
-	public void add(double toAdd) {
-		amount=amount+toAdd;
+	private Resource(QuantityDimension dimension, long startAmount, double smallestAmount, String smallestAmountUnit){
+		amount=new DimensionalQuantity(dimension, startAmount, smallestAmount, smallestAmountUnit);
 	}
 	
-	public boolean remove(double toRemove) {
-		double newAmount=amount-toRemove;
-		if(newAmount<0) {
+	protected Resource(QuantityDimension dimension, double smallestAmount, String smallestAmountUnit){
+		this(dimension, 0l, smallestAmount, smallestAmountUnit);
+	}
+	
+	public void add(DimensionalQuantity toAdd) {
+		amount.add(toAdd);
+	}
+	
+	public boolean remove(DimensionalQuantity toRemove) {
+		DimensionalQuantity newAmount = DimensionalQuantity.addition(amount, DimensionalQuantity.multiplication(toRemove, -1l));
+		if(newAmount.isNegative()) {
 			return false;
 		}else {
 			amount=newAmount;
@@ -21,25 +32,20 @@ public abstract class Resource {
 		}
 	}
 	
-	public boolean possibleToRemove(double toRemove) {
-		return amount-toRemove>=0;
+	public boolean possibleToRemove(DimensionalQuantity toRemove) {
+		return DimensionalQuantity.addition(amount, DimensionalQuantity.multiplication(toRemove, -1l)).isNegative();
 	}
 	
-	public int getIntegerAmount() {
-		if(this.isContinous()) {
-			System.out.println("Integer ammount of a non-integer resource requested");
-		}
-		return (int)(amount);
-	}
-	
-	public double getDoubleAmmount() {
-		if(!this.isContinous()) {
-			System.out.println("Non-integer ammount of a integer resource requested");
-		}
+	protected DimensionalQuantity getAmount() {
 		return amount;
 	}
 	
-	public abstract boolean isContinous();
-	
 	public abstract String getName();
+	public abstract String getDefaultUnit();//TODO: Replace with a system which assigns units automatically (possibly implement in DimensionalQuantity Class)
+	
+	
+	@Override
+	public String toString() {
+		return super.toString()+": "+getName()+": "+getAmount().getValue(getDefaultUnit());
+	}
 }

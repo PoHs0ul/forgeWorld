@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import gameMechanics.Building;
+import gameMechanics.ResourceList;
 
 public class CoalMine extends gameMechanics.Building{
 
 	private static int [] animationArray;
 	
-	public CoalMine(){
-		
+	public CoalMine(ResourceList resourceList){
+		super(resourceList);
 	}
 	
 	public CoalMine(gameMechanics.Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building> list) {
@@ -18,11 +19,17 @@ public class CoalMine extends gameMechanics.Building{
 	}
 	
 	public ArrayList<String> getCostItemNames() {
-		return new ArrayList<String>(Arrays.asList("Steel","Wood"));
+		return new ArrayList<>(Arrays.asList("Steel","Wood"));
 	}
 
-	public ArrayList<Double> getCostItemAmounts() {
-		return new ArrayList<Double>(Arrays.asList(0.0,0.0));
+	@Override
+	public ArrayList<Double> getCostItemDoubleAmounts() {
+		return new ArrayList<>(Arrays.asList(1.0, 1.0));
+	}
+	
+	@Override
+	public ArrayList<String> getCostItemDoubleAmountUnits(){
+		return new ArrayList<>(Arrays.asList("t", "t"));
 	}
 
 	public int getMaxStrPts() {

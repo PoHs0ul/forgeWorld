@@ -1,14 +1,24 @@
 package resources;
 
+import gameMechanics.QuantityDimensionsManager;
 import gameMechanics.Resource;
 
 public class BasicSteel extends Resource{
 
-	@Override
-	public boolean isContinous() {
-		return true;
+	public BasicSteel(QuantityDimensionsManager dimensionManager) {
+		super(dimensionManager.massDimension, 1.0, "mg");
 	}
-
+	
+	//Constructor for copying from template
+	public BasicSteel(BasicSteel templateResource, double startAmount, String startAmountUnit) {
+		super(templateResource, startAmount, startAmountUnit);
+	}
+	
+	@Override
+	public String getDefaultUnit() {
+		return "t";
+	}
+	
 	@Override
 	public String getName() {
 		return "Steel";

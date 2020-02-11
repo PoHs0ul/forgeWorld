@@ -1,24 +1,30 @@
 package gameMechanics;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dimensionSystem.QuantityDimension;
+
 
 public class GameMechanics {
-	private static final int millisPerProductionTick = 100;
+	private static final int millisPerProductionTick = 1000;
 	
 	private Map map;//An object which contains data about all the possible positions on the map
 	private Timer productionTickTimer;//A timer which continuously executes stuff for the production
 	private ArrayList<Building> buildingTypeList;//A list which contains an instance of each possible building Type
 	private TechTree techTree;//A class which generates and stores the tech tree
 	private ResourceList resourceList;//Stores general information about the resources available in the game
+	private QuantityDimensionsManager dimensionManager;//Stores information about the used dimensions and their units
 	
 	public GameMechanics() {
-		resourceList=new ResourceList();
+		
+		dimensionManager = new QuantityDimensionsManager();
+		resourceList=new ResourceList(dimensionManager);
 		initializeBuildingTypeList();
 		techTree=new TechTree();
 		
@@ -26,7 +32,7 @@ public class GameMechanics {
 		
 		initialiseProductionTickTimer();//start the timer for the production ticks
 		
-		//System.out.println(buildingTypeList.get(0).build(map, 1, 1, 0, map.buildingList));//Test: place a coal mine
+		System.out.println(buildingTypeList.get(0).build(map, 1, 1, 0, map.buildingList));//TODO: Remove, only for test purposes: place a coal mine
 	}
 	
 	//define the production ticks
@@ -43,6 +49,13 @@ public class GameMechanics {
 						iter.getContent().onProductionTick();
 					}
 				}
+				
+				//TODO: Remove, only for test purposes: Print out the current resources
+				for(int i = 0; i < map.resources.resources.size(); ++i) {
+					System.out.print(map.resources.resources.get(i).getName() +" "+ map.resources.resources.get(i).getAmount().getValue(map.resources.resources.get(i).getDefaultUnit()) + "; ");
+				}
+				System.out.println();
+				
 			}
 		}, 0, millisPerProductionTick);
 	}
@@ -53,7 +66,7 @@ public class GameMechanics {
 			buildingTypeList=new ArrayList<Building>();
 			File[] classFilesArray=new File(Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())+File.separator+"buildings").listFiles();
 			for(int i=0;i<classFilesArray.length;++i){
-				buildingTypeList.add((Building)Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).newInstance());
+				buildingTypeList.add((Building)(Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(ResourceList.class).newInstance(resourceList)));
 			}
 			buildingTypeList.trimToSize();
 		} catch (URISyntaxException e) {
@@ -63,6 +76,18 @@ public class GameMechanics {
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
