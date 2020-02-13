@@ -1,13 +1,18 @@
 package gameMechanics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
-public class ElectricityLvPole extends MapObject{
+public class ElectricityLvPole extends Building{
 	//Variables required by superclass
 	private static int [] animationArray;
 	
 	//Constants
 	private final static double cableRange=10;
+	
+	//Control the behavior of all electricity lv poles
+	private static boolean addAutomatedWiresOnBuild = true;//Whether to add automated wires to all poles which are newly built
 	
 	private Vector<ElectricityLvPole> connectedPoles;
 	private ElectricitySubNetwork subNetwork;
@@ -18,20 +23,8 @@ public class ElectricityLvPole extends MapObject{
 	//	super(map, x, y, angle);
 	//}
 	
-	//Public constructor to create a representative without content
-	public ElectricityLvPole() {
-		
-	}
-	
-	//Public constructor for the case that no automatic connections should be made
-	//public ElectricityLvPole(Map map, int x, int y, int angle, ElectricitySubNetwork subNet){
-	//	this(map, x, y, angle);
-	//	connectedPoles=new Vector<ElectricityLvPole>(0,1);
-	//	setSubnetwork(subNet);
-	//}
-	
-	//Public constructor for the case that automatic connections should be made
-	public ElectricityLvPole(Map map, int x, int y, int angle, ElectricityNetwork net, boolean addAutomatedWires){
+	public ElectricityLvPole(Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building> list, ElectricityNetwork net, boolean addAutomatedWires){
+		super(map, x, y, angle, list);
 		if(addAutomatedWires) {
 			Vector<ElectricityLvPole> connectedPoleCandidates=new Vector<ElectricityLvPole>(0,1);
 			
@@ -40,12 +33,12 @@ public class ElectricityLvPole extends MapObject{
 				for(int j=y-(int)Math.sqrt(cableRange*cableRange-i*i);j<=y+(int)Math.sqrt(cableRange*cableRange-i*i);++j) {
 					if(map.getSpotFromSpCoords(i, j).getElectricityPole()!=null) {
 						boolean add=true;
-						//Go through all subnetworks wich have been discovered
+						//Go through all subnetworks which have been discovered
 						for(int k=0;k<connectedPoleCandidates.size();++k) {
 							//check if the new pole belongs to one of the discovered networks
 							if(map.getSpotFromSpCoords(i, j).getElectricityPole().getSubNetwork() == connectedPoleCandidates.get(k).getSubNetwork()) {
 								add=false;
-								//check if the new pole is closer tha the other discovered poles from this network
+								//check if the new pole is closer than the other discovered poles from this network
 								if(Math.sqrt((i-x)*(i-x)+(j-y)*(j-y)) < connectedPoleDistances.get(k)) {
 									//Set this as the new connect pole for this network
 									connectedPoleCandidates.set(k, map.getSpotFromSpCoords(i, j).getElectricityPole());
@@ -61,8 +54,8 @@ public class ElectricityLvPole extends MapObject{
 					}
 				}
 			}
-			//Seting the new subnetwork memberships
-			if(connectedPoles.size() == 0) {
+			//Setting the new subnetwork memberships
+			if(connectedPoleCandidates.size() == 0) {
 				setSubNetwork(net.addSubNetwork());
 			}else {
 				setSubNetwork(connectedPoleCandidates.get(1).getSubNetwork());
@@ -77,6 +70,11 @@ public class ElectricityLvPole extends MapObject{
 			connectedPoles=new Vector<ElectricityLvPole>(0,1);
 			setSubNetwork(net.addSubNetwork());
 		}
+	}
+	
+	//Constructor for the "build" function
+	public ElectricityLvPole(Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building> list) {
+		this(map, x, y, angle, list, map.electricityNet, addAutomatedWiresOnBuild);
 	}
 	
 	//public method to create a new connection from this pole to another one
@@ -107,7 +105,7 @@ public class ElectricityLvPole extends MapObject{
 	
 	@Override
 	public int getMaxStrPts() {
-		return 100;//random value (for now)
+		return 100;//TODO:Change; random value for now
 	}
 
 	@Override
@@ -116,7 +114,7 @@ public class ElectricityLvPole extends MapObject{
 	}
 
 	@Override
-	protected void updateSpot(Spot spot) {
+	protected void occupySpot(Spot spot) {
 		spot.setElectricityPole(this);
 	}
 
@@ -148,5 +146,20 @@ public class ElectricityLvPole extends MapObject{
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public ArrayList<String> getCostItemNames() {
+		return new ArrayList<>(Arrays.asList("Steel","Wood"));
+	}
+
+	@Override
+	public ArrayList<Double> getCostItemDoubleAmounts() {
+		return new ArrayList<>(Arrays.asList(0.0, 0.0));
+	}
+	
+	@Override
+	public ArrayList<String> getCostItemDoubleAmountUnits(){
+		return new ArrayList<>(Arrays.asList("t", "t"));
 	}
 }
