@@ -24,7 +24,6 @@ public class ResourceList {
 			//String[] resourceDirContent=resourceDir.list();
 			Class [] classesForConstructor = {QuantityDimensionsManager.class};
 			for(int i=0;i<classFilesArray.length;++i){
-				System.out.println(Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(classesForConstructor));
 				Resource newResource=(Resource)Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(classesForConstructor).newInstance(dimensionManager);
 				resources.add(newResource);
 				resourceIDs.put(newResource.getName(), resources.size()-1);

@@ -33,7 +33,7 @@ public abstract class Resource {
 	}
 	
 	public boolean possibleToRemove(DimensionalQuantity toRemove) {
-		return DimensionalQuantity.addition(amount, DimensionalQuantity.multiplication(toRemove, -1l)).isNegative();
+		return !DimensionalQuantity.addition(amount, DimensionalQuantity.multiplication(toRemove, -1l)).isNegative();
 	}
 	
 	protected DimensionalQuantity getAmount() {
@@ -43,6 +43,10 @@ public abstract class Resource {
 	public abstract String getName();
 	public abstract String getDefaultUnit();//TODO: Replace with a system which assigns units automatically (possibly implement in DimensionalQuantity Class)
 	
+	//Whether the resource is production/consumption is calculated by all buildings together or by individual building
+	public boolean getUseGlobalCalculation() {
+		return true;//Default is calculation by all buildings together; Overwrite to change
+	}
 	
 	@Override
 	public String toString() {

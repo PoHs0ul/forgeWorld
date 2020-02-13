@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dimensionSystem.QuantityDimension;
-
-
 public class GameMechanics {
 	private static final int millisPerProductionTick = 1000;
 	
@@ -30,9 +27,11 @@ public class GameMechanics {
 		
 		map=new Map(this, 100,100);//create a map with the given number of chunks (length and width)
 		
-		initialiseProductionTickTimer();//start the timer for the production ticks
+		//initialiseProductionTickTimer();//start the timer for the production ticks//TODO: Re-enable
 		
-		System.out.println(buildingTypeList.get(0).build(map, 1, 1, 0, map.buildingList));//TODO: Remove, only for test purposes: place a coal mine
+		//TODO: Remove, only for test purposes
+		System.out.println(buildingTypeList.get(0).build(map, 1, 1, 0, map.buildingList));//place a coal mine
+		System.out.println(map.buildingList.getHead().getContent());//Print information about registered buildings
 	}
 	
 	//define the production ticks

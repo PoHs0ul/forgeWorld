@@ -1,5 +1,9 @@
 package gameMechanics;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 
 public class Map {
 	private Chunk[][] chunks;//a two dimensional array of chunks
@@ -8,6 +12,8 @@ public class Map {
 	
 	public utilities.DoubleLinkedLockedList<Building> buildingList;//A list which contains all the buildings the player has under his control
 	public utilities.DoubleLinkedLockedList<UncontrolledObject> mapObjectList;//A list of all objects on the map which the player does not control
+	public ArrayList<Building> productionBuildingList;//A list containing all buildings which are relevant for calculating the resource production
+	public Queue<Integer> productionBuildingListFreeSpots;//A queue containing all free spot in the resourceBuildingList
 	
 	public ElectricityNetwork electricityNet;//A Class which handles the electricity network
 	
@@ -15,6 +21,8 @@ public class Map {
 		resources=mec.getResourceList().createNewResourceManager();
 		buildingList=new utilities.DoubleLinkedLockedList<Building>();
 		mapObjectList=new utilities.DoubleLinkedLockedList<UncontrolledObject>();
+		productionBuildingList = new ArrayList<>();
+		productionBuildingListFreeSpots = new LinkedList<Integer>();
 		
 		//create the required number of chunks in x and y direction
 		chunks=new Chunk[x][y];
@@ -59,6 +67,28 @@ public class Map {
 		return getChunkFromSpCoords(x,y).getSpot(x%Chunk.size, y%Chunk.size);
 	}
 	
+	//Add a building to the list for building which are relevant for production calculations
+	public int addToProductionBuildingList(Building building) {
+		int i;
+		try {
+			i = productionBuildingListFreeSpots.remove();
+			productionBuildingList.set(i, building);
+		}catch(NoSuchElementException e) {
+			i=productionBuildingList.size();
+			productionBuildingList.add(building);
+		}
+		return i;
+	}
 	
+	//Remove a building from the list for building which are relevant for production calculations
+	public void removeFromProductionBuildingList(int index) {
+		productionBuildingList.set(index, null);
+		productionBuildingListFreeSpots.add(index);
+	}
 	
+	//TODO: Implement System to calculate the global production/consumption
+	
+	//TODO: Implement System to calculate the production/consumption horizon (time until one of the resource stockpiles is empty/overflows)
+	
+	//TODO: Implement System to reduce/increase production capacity utilization when production/consumption horizon hits
 }

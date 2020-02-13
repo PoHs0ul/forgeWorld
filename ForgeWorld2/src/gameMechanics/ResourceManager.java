@@ -42,7 +42,6 @@ public class ResourceManager {
 	//check whether there are enough resources available to remove a given amount of multiple resources from the pool using names
 	public boolean possibleToRemResByNames(ArrayList<String> itemNames, ArrayList<DimensionalQuantity> amounts){
 		for(int i=0;i<itemNames.size();++i){
-			System.out.println(amounts);
 			if(!resources.get(resourceList.getResourceID(itemNames.get(i))).possibleToRemove(amounts.get(i))){
 				return false;
 			}

@@ -18,13 +18,14 @@ public class CoalMine extends gameMechanics.Building{
 		super(map, x, y, angle, list);
 	}
 	
+	@Override
 	public ArrayList<String> getCostItemNames() {
 		return new ArrayList<>(Arrays.asList("Steel","Wood"));
 	}
 
 	@Override
 	public ArrayList<Double> getCostItemDoubleAmounts() {
-		return new ArrayList<>(Arrays.asList(1.0, 1.0));
+		return new ArrayList<>(Arrays.asList(0.0, 0.0));
 	}
 	
 	@Override
