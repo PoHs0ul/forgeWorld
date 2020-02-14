@@ -1,5 +1,6 @@
 package gameMechanics;
 
+import buildings.ElectricityLvPole;
 import utilities.DoubleLinkedLockedList;
 
 public class ElectricityNetwork {

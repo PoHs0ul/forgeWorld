@@ -22,9 +22,9 @@ public class ResourceList {
 			File[] classFilesArray=new File(Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())+File.separator+"resources").listFiles();
 			//File resourceDir=new File(System.getProperty("user.dir")+File.separator+"resources");
 			//String[] resourceDirContent=resourceDir.list();
-			Class [] classesForConstructor = {QuantityDimensionsManager.class};
+			Class<?>[] classesForConstructor = {QuantityDimensionsManager.class};
 			for(int i=0;i<classFilesArray.length;++i){
-				Resource newResource=(Resource)Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(classesForConstructor).newInstance(dimensionManager);
+				Resource newResource=(Resource)Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(classesForConstructor).newInstance(this.dimensionManager);
 				resources.add(newResource);
 				resourceIDs.put(newResource.getName(), resources.size()-1);
 				System.out.println("Added resource "+newResource.getName());
@@ -59,7 +59,7 @@ public class ResourceList {
 		newResourceManager.resources=new ArrayList<Resource>(resources.size());
 		for(int i=0;i<resources.size();++i) {
 			try {
-				Class[] classesForConstructor = {resources.get(i).getClass(), double.class, String.class };
+				Class<?>[] classesForConstructor = {resources.get(i).getClass(), double.class, String.class };
 				Object[] objectsForConstructor = {resources.get(i), 0.0, resources.get(i).getDefaultUnit()};
 				newResourceManager.resources.add(resources.get(i).getClass().getConstructor(classesForConstructor).newInstance(objectsForConstructor));
 			} catch (InstantiationException e) {

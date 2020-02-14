@@ -5,24 +5,25 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+
 public class Map {
 	private Chunk[][] chunks;//a two dimensional array of chunks
 	
-	public ResourceManager resources;//An object which keeps track of the resources of the player
+	public ResourceManager resources;//An object which keeps track of the resources of the player//TODO: Make private and set up methods for access
 	
-	public utilities.DoubleLinkedLockedList<Building> buildingList;//A list which contains all the buildings the player has under his control
-	public utilities.DoubleLinkedLockedList<UncontrolledObject> mapObjectList;//A list of all objects on the map which the player does not control
-	public ArrayList<Building> productionBuildingList;//A list containing all buildings which are relevant for calculating the resource production
+	public utilities.DoubleLinkedLockedList<Building<?>> buildingList;//A list which contains all the buildings the player has under his control
+	public ArrayList<Building<?>> productionBuildingList;//A list containing all buildings which are relevant for calculating the resource production
 	public Queue<Integer> productionBuildingListFreeSpots;//A queue containing all free spot in the resourceBuildingList
 	
 	public ElectricityNetwork electricityNet;//A Class which handles the electricity network
 	
 	public Map(GameMechanics mec, int x, int y){
 		resources=mec.getResourceList().createNewResourceManager();
-		buildingList=new utilities.DoubleLinkedLockedList<Building>();
-		mapObjectList=new utilities.DoubleLinkedLockedList<UncontrolledObject>();
+		buildingList=new utilities.DoubleLinkedLockedList<Building<?>>();
 		productionBuildingList = new ArrayList<>();
 		productionBuildingListFreeSpots = new LinkedList<Integer>();
+		
+		electricityNet = new ElectricityNetwork();
 		
 		//create the required number of chunks in x and y direction
 		chunks=new Chunk[x][y];
@@ -68,7 +69,7 @@ public class Map {
 	}
 	
 	//Add a building to the list for building which are relevant for production calculations
-	public int addToProductionBuildingList(Building building) {
+	public int addToProductionBuildingList(Building<?> building) {
 		int i;
 		try {
 			i = productionBuildingListFreeSpots.remove();

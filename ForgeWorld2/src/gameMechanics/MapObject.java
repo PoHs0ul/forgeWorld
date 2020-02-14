@@ -5,24 +5,29 @@ import java.util.Iterator;
 
 import utilities.DoubleLinkedLockedListNode;
 
-public abstract class MapObject {
+public abstract class MapObject<T extends MapObjectUniversalData> {
 	//A class for everything which can be placed on the map
-	private int strPts;
-	private ArrayList<Spot> occupyingSpots;
-	private DoubleLinkedLockedListNode<?> node;
+	protected T universalDataObject;
+	
+	protected int strPts;
+	protected ArrayList<Spot> occupyingSpots;
+	protected DoubleLinkedLockedListNode<?> node;
 	
 	public MapObject(){
 		
 	}
 	
-	public MapObject(Map map, int x, int y, int angle){
+	public MapObject(T universalDataObject, Map map, int x, int y, int angle){
+		this.universalDataObject = universalDataObject;
+		
 		strPts=getMaxStrPts();
 		//save all the spots which are occupied by the object
+		int[][] hitMap = universalDataObject.getHitMap();
 		occupyingSpots=new ArrayList<Spot>();
-		for(int i=0;i<getHitMap().length;++i){
-			for(int j=0;j<getHitMap()[i].length;++j){
-				if(getHitMap()[i][j]==1){
-					Spot s=map.getSpotFromSpCoords(x-((((angle+1)/2)%2)*2-1)*(i-getHitMap().length/2), y-(((angle/2)%2)*2-1)*(j-getHitMap()[i].length/2));
+		for(int i=0;i<hitMap.length;++i){
+			for(int j=0;j<hitMap[i].length;++j){
+				if(hitMap[i][j]==1){
+					Spot s=map.getSpotFromSpCoords(x-((((angle+1)/2)%2)*2-1)*(i-hitMap.length/2), y-(((angle/2)%2)*2-1)*(j-hitMap[i].length/2));
 					occupyingSpots.add(s);//save this spot
 					occupySpot(s);//give information about this object to the spot
 				}
@@ -56,23 +61,7 @@ public abstract class MapObject {
 		return strPts;
 	}
 	
-	//returns a boolean indicating whether the object can be placed at a certain position or not
-	public boolean isPlacable(Map map, int x, int y, int angle){
-		for(int i=0;i<getHitMap().length;++i){
-			for(int j=0;j<getHitMap()[i].length;++j){
-				if(getHitMap()[i][j]==1){
-					Spot s=map.getSpotFromSpCoords(x-((((angle+1)/2)%2)*2-1)*(i-getHitMap().length/2), y-(((angle/2)%2)*2-1)*(j-getHitMap()[i].length/2));
-					if(s==null||s.getBuilding()!=null||s.getElectricityPole()!=null){
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
 	public abstract int getMaxStrPts();
-	public abstract int[][] getHitMap();
 	protected abstract void occupySpot(Spot spot);
 	protected abstract void freeSpot(Spot spot);
 	public abstract String getTextureFileName();

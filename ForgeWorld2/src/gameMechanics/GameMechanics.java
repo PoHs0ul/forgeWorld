@@ -13,7 +13,7 @@ public class GameMechanics {
 	
 	private Map map;//An object which contains data about all the possible positions on the map
 	private Timer productionTickTimer;//A timer which continuously executes stuff for the production
-	private ArrayList<Building> buildingTypeList;//A list which contains an instance of each possible building Type
+	private ArrayList<BuildingUniversalData> buildingTypeList;//A list which contains an instance of each possible building Type
 	private TechTree techTree;//A class which generates and stores the tech tree
 	private ResourceList resourceList;//Stores general information about the resources available in the game
 	private QuantityDimensionsManager dimensionManager;//Stores information about the used dimensions and their units
@@ -27,10 +27,11 @@ public class GameMechanics {
 		
 		map=new Map(this, 100,100);//create a map with the given number of chunks (length and width)
 		
-		//initialiseProductionTickTimer();//start the timer for the production ticks//TODO: Re-enable
+		initialiseProductionTickTimer();//start the timer for the production ticks//TODO: Re-enable
 		
 		//TODO: Remove, only for test purposes
-		System.out.println(buildingTypeList.get(0).build(map, 1, 1, 0, map.buildingList));//place a coal mine
+		System.out.println(buildingTypeList.get(0).buildBuilding(map, 1, 1, 0, map.buildingList));//place a coal mine
+		System.out.println(buildingTypeList.get(1).buildBuilding(map, 10, 10, 0, map.buildingList));//place an electricity pole
 		System.out.println(map.buildingList.getHead().getContent());//Print information about registered buildings
 	}
 	
@@ -43,7 +44,7 @@ public class GameMechanics {
 				//here goes stuff which should be executed each production tick
 				
 				//loop is executed for each placed building
-				for(utilities.DoubleLinkedLockedListNode<Building> iter=map.buildingList.getHead(); iter!=null; iter=iter.getNextNode()){
+				for(utilities.DoubleLinkedLockedListNode<Building<? extends BuildingUniversalData>> iter=map.buildingList.getHead(); iter!=null; iter=iter.getNextNode()){
 					synchronized(iter){
 						iter.getContent().onProductionTick();
 					}
@@ -62,31 +63,26 @@ public class GameMechanics {
 	//initialize the list of all building types
 	private void initializeBuildingTypeList(){
 		try {
-			buildingTypeList=new ArrayList<Building>();
+			buildingTypeList=new ArrayList<BuildingUniversalData>();
 			File[] classFilesArray=new File(Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())+File.separator+"buildings").listFiles();
 			for(int i=0;i<classFilesArray.length;++i){
-				buildingTypeList.add((Building)(Class.forName(classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0]).getConstructor(ResourceList.class).newInstance(resourceList)));
+				String className = classFilesArray[i].getParentFile().getName()+"."+classFilesArray[i].getName().split("\\.")[0];
+				buildingTypeList.add((BuildingUniversalData) Class.forName(className).getDeclaredMethod("createUniversalDataObject", ResourceList.class).invoke(null, resourceList));
 			}
 			buildingTypeList.trimToSize();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

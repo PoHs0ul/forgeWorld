@@ -1,10 +1,14 @@
-package gameMechanics;
+package buildings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Vector;
 
-public class ElectricityLvPole extends Building{
+import gameMechanics.Building;
+import gameMechanics.BuildingUniversalData;
+import gameMechanics.ElectricityLvPoleUniversalData;
+import gameMechanics.ElectricitySubNetwork;
+import gameMechanics.Spot;
+
+public class ElectricityLvPole extends Building<BuildingUniversalData>{
 	//Variables required by superclass
 	private static int [] animationArray;
 	
@@ -23,25 +27,26 @@ public class ElectricityLvPole extends Building{
 	//	super(map, x, y, angle);
 	//}
 	
-	public ElectricityLvPole(Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building> list, ElectricityNetwork net, boolean addAutomatedWires){
-		super(map, x, y, angle, list);
-		if(addAutomatedWires) {
+	public ElectricityLvPole(BuildingUniversalData universalDataObject, gameMechanics.Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building<?>> list){
+		super(universalDataObject, map, x, y, angle, list);
+		if(addAutomatedWiresOnBuild) {
 			Vector<ElectricityLvPole> connectedPoleCandidates=new Vector<ElectricityLvPole>(0,1);
 			
 			Vector<Double> connectedPoleDistances=new Vector<Double>(0,1);
 			for(int i=x-(int)cableRange;i<=x+(int)cableRange;++i) {
 				for(int j=y-(int)Math.sqrt(cableRange*cableRange-i*i);j<=y+(int)Math.sqrt(cableRange*cableRange-i*i);++j) {
-					if(map.getSpotFromSpCoords(i, j).getElectricityPole()!=null) {
+					ElectricityLvPole currentPole = map.getSpotFromSpCoords(i, j).getElectricityPole();
+					if(currentPole!=null && currentPole!=this) {
 						boolean add=true;
 						//Go through all subnetworks which have been discovered
 						for(int k=0;k<connectedPoleCandidates.size();++k) {
 							//check if the new pole belongs to one of the discovered networks
-							if(map.getSpotFromSpCoords(i, j).getElectricityPole().getSubNetwork() == connectedPoleCandidates.get(k).getSubNetwork()) {
+							if(currentPole.getSubNetwork() == connectedPoleCandidates.get(k).getSubNetwork()) {
 								add=false;
 								//check if the new pole is closer than the other discovered poles from this network
 								if(Math.sqrt((i-x)*(i-x)+(j-y)*(j-y)) < connectedPoleDistances.get(k)) {
 									//Set this as the new connect pole for this network
-									connectedPoleCandidates.set(k, map.getSpotFromSpCoords(i, j).getElectricityPole());
+									connectedPoleCandidates.set(k, currentPole);
 									connectedPoleDistances.set(k, Math.sqrt((i-x)*(i-x)+(j-y)*(j-y)));
 								}
 							}
@@ -56,9 +61,9 @@ public class ElectricityLvPole extends Building{
 			}
 			//Setting the new subnetwork memberships
 			if(connectedPoleCandidates.size() == 0) {
-				setSubNetwork(net.addSubNetwork());
+				setSubNetwork(map.electricityNet.addSubNetwork());
 			}else {
-				setSubNetwork(connectedPoleCandidates.get(1).getSubNetwork());
+				setSubNetwork(connectedPoleCandidates.get(0).getSubNetwork());
 			}
 					
 			//connect the chosen poles
@@ -68,13 +73,20 @@ public class ElectricityLvPole extends Building{
 			}
 		}else {
 			connectedPoles=new Vector<ElectricityLvPole>(0,1);
-			setSubNetwork(net.addSubNetwork());
+			setSubNetwork(map.electricityNet.addSubNetwork());
 		}
 	}
 	
-	//Constructor for the "build" function
-	public ElectricityLvPole(Map map, int x, int y, int angle, utilities.DoubleLinkedLockedList<Building> list) {
-		this(map, x, y, angle, list, map.electricityNet, addAutomatedWiresOnBuild);
+	public static BuildingUniversalData createUniversalDataObject(gameMechanics.ResourceList resourceList) {
+		
+		String name = "Electricity Low Voltage Pole";
+		
+		String [] costItemNames = {"Steel","Wood"};
+		double [] costItemDoubleAmounts = {0.0, 0.0};
+		String [] costItemDoubleAmountUnits = {"t", "t"};
+		int[][] hitMap = {{1}};
+		
+		return new ElectricityLvPoleUniversalData(name, ElectricityLvPole.class, resourceList, costItemNames, costItemDoubleAmounts, costItemDoubleAmountUnits, hitMap);
 	}
 	
 	//public method to create a new connection from this pole to another one
@@ -95,7 +107,7 @@ public class ElectricityLvPole extends Building{
 		associatedNode=subNet.addPole(this);
 	}
 	
-	void associateToNewSubNetwork(ElectricitySubNetwork subNet) {
+	public void associateToNewSubNetwork(ElectricitySubNetwork subNet) {
 		subNetwork=subNet;
 	}
 	
@@ -107,12 +119,7 @@ public class ElectricityLvPole extends Building{
 	public int getMaxStrPts() {
 		return 100;//TODO:Change; random value for now
 	}
-
-	@Override
-	public int[][] getHitMap() {
-		return new int[][] {{1}};
-	}
-
+	
 	@Override
 	protected void occupySpot(Spot spot) {
 		spot.setElectricityPole(this);
@@ -131,35 +138,5 @@ public class ElectricityLvPole extends Building{
 	@Override
 	public void setAnimationArray(int[] array) {
 		animationArray=array.clone();
-	}
-	
-	@Override
-	public boolean isPlacable(Map map, int x, int y, int angle){
-		for(int i=0;i<getHitMap().length;++i){
-			for(int j=0;j<getHitMap()[i].length;++j){
-				if(getHitMap()[i][j]==1){
-					Spot s=map.getSpotFromSpCoords(x-((((angle+1)/2)%2)*2-1)*(i-getHitMap().length/2), y-(((angle/2)%2)*2-1)*(j-getHitMap()[i].length/2));
-					if(s==null||s.getBuilding()!=null||s.getElectricityPole()!=null){
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public ArrayList<String> getCostItemNames() {
-		return new ArrayList<>(Arrays.asList("Steel","Wood"));
-	}
-
-	@Override
-	public ArrayList<Double> getCostItemDoubleAmounts() {
-		return new ArrayList<>(Arrays.asList(0.0, 0.0));
-	}
-	
-	@Override
-	public ArrayList<String> getCostItemDoubleAmountUnits(){
-		return new ArrayList<>(Arrays.asList("t", "t"));
 	}
 }

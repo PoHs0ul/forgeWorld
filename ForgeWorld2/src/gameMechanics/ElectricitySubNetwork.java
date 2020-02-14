@@ -1,15 +1,20 @@
 package gameMechanics;
 
+import buildings.ElectricityLvPole;
+import utilities.DoubleLinkedLockedList;
+
 public class ElectricitySubNetwork {
 	
 	private utilities.DoubleLinkedLockedListNode<ElectricitySubNetwork> networkNode;
 	private ElectricityNetwork network;
 	
-	private utilities.DoubleLinkedLockedList<ElectricityLvPole> poles;
+	private DoubleLinkedLockedList<ElectricityLvPole> poles;
 	
-	ElectricitySubNetwork(ElectricityNetwork net, utilities.DoubleLinkedLockedList<ElectricitySubNetwork> list){
+	ElectricitySubNetwork(ElectricityNetwork net, DoubleLinkedLockedList<ElectricitySubNetwork> list){
 		networkNode=list.addNode(this);
 		network=net;
+		
+		poles = new DoubleLinkedLockedList<>();
 	}
 	
 	public utilities.DoubleLinkedLockedListNode<ElectricityLvPole> addPole(ElectricityLvPole newPole) {
@@ -20,7 +25,7 @@ public class ElectricitySubNetwork {
 		return network;
 	}
 	
-	public utilities.DoubleLinkedLockedList<ElectricityLvPole> getPoles() {
+	public DoubleLinkedLockedList<ElectricityLvPole> getPoles() {
 		return poles;
 	}
 	

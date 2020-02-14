@@ -31,7 +31,7 @@ public class ResourceManager {
 		return remRes(resourceList.getResourceID(resName),amount);
 	}
 	//check whether there are enough resources available to remove a given amount of multiple resources from the pool using IDs
-	private boolean possibleToRemResByIDs(ArrayList<Integer> itemIDs, ArrayList<DimensionalQuantity> amounts){
+	boolean possibleToRemResByIDs(ArrayList<Integer> itemIDs, ArrayList<DimensionalQuantity> amounts){
 		for(int i=0;i<itemIDs.size();++i){
 			if(!resources.get(i).possibleToRemove(amounts.get(i))){
 				return false;
@@ -49,7 +49,7 @@ public class ResourceManager {
 		return true;
 	}
 	//attempt to remove a given amount of multiple resources from the pool using IDs. Returns true if it was successful and false if not
-	private boolean remResByIDs(ArrayList<Integer> itemIDs, ArrayList<DimensionalQuantity> amounts){
+	boolean remResByIDs(ArrayList<Integer> itemIDs, ArrayList<DimensionalQuantity> amounts){
 		if(possibleToRemResByIDs(itemIDs, amounts)){
 			for(int i=0;i<itemIDs.size();++i){
 				resources.get(itemIDs.get(i)).remove(amounts.get(i));

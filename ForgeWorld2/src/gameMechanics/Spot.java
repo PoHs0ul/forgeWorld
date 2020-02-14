@@ -1,9 +1,11 @@
 package gameMechanics;
 
+import buildings.ElectricityLvPole;
+
 public class Spot {
 	public static final int size=50;
 	
-	private Building occupyingBuilding;//A reference to the building which is on this spot, is null if there is none
+	private Building<? extends BuildingUniversalData> occupyingBuilding;//A reference to the building which is on this spot, is null if there is none
 	private ElectricityLvPole electricityPole;//A reference to the building which is on this spot, is null if there is none
 	private String terrainType;//A string which represents the terrain type of this spot
 	int texture;//An integer which represents the texture variation of this spot
@@ -14,7 +16,7 @@ public class Spot {
 		terrainType=terType;
 	}
 	
-	public Building getBuilding(){
+	public Building<? extends BuildingUniversalData> getBuilding(){
 		return occupyingBuilding;
 	}
 	
@@ -22,7 +24,7 @@ public class Spot {
 		return electricityPole;
 	}
 	
-	public void setBuilding(Building newBuilding){
+	public void setBuilding(Building<? extends BuildingUniversalData> newBuilding){
 		occupyingBuilding=newBuilding;
 	}
 	
